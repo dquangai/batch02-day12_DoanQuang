@@ -15,6 +15,10 @@ __pycache__/
 dist/
 build/
 .pytest_cache/
+.uv-cache/
+.ruff_cache/
+.coverage*
+pytest-cache-files-*/
 
 # ── Virtual environments ──────────────────────────────────
 venv/

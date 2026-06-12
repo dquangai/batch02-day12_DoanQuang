@@ -5,7 +5,7 @@ Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
 ## Checklist Deliverable
 
 - [x] Dockerfile (multi-stage, < 500 MB)
-- [x] docker-compose.yml (agent + redis)
+- [x] docker-compose.yml (nginx + scalable agent + redis)
 - [x] .dockerignore
 - [x] Health check endpoint (`GET /health`)
 - [x] Readiness endpoint (`GET /ready`)
@@ -26,7 +26,7 @@ Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
 ├── app/
 │   ├── main.py         # Entry point — kết hợp tất cả
 │   ├── config.py       # 12-factor config
-│   ├── auth.py         # API Key + JWT
+│   ├── auth.py         # API Key authentication
 │   ├── rate_limiter.py # Rate limiting
 │   └── cost_guard.py   # Budget protection
 ├── Dockerfile          # Multi-stage, production-ready
@@ -57,7 +57,7 @@ API_KEY=$(grep AGENT_API_KEY .env | cut -d= -f2)
 curl -H "X-API-Key: $API_KEY" \
      -X POST http://localhost/ask \
      -H "Content-Type: application/json" \
-     -d '{"question": "What is deployment?"}'
+     -d '{"user_id": "local", "question": "What is deployment?"}'
 ```
 
 ---
@@ -71,7 +71,7 @@ npm i -g @railway/cli
 # Login và deploy
 railway login
 railway init
-railway variables set OPENAI_API_KEY=sk-...
+railway variables set OPENAI_API_KEY=<openai-key>
 railway variables set AGENT_API_KEY=your-secret-key
 railway up
 
@@ -98,3 +98,17 @@ python check_production_ready.py
 ```
 
 Script này kiểm tra tất cả items trong checklist và báo cáo những gì còn thiếu.
+
+---
+
+## Bonus CI/CD
+
+Repo root có bonus pipeline:
+
+- `.github/workflows/ci-cd.yml`
+- `tests/test_app.py`
+- `requirements-dev.txt`
+- `pyproject.toml`
+- `BONUS_CICD.md`
+
+Pipeline chạy lint, unit test coverage, production readiness check, Docker config validation, Docker build, rồi deploy Railway hoặc Render khi cấu hình GitHub secrets.
